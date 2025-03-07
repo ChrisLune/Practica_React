@@ -1,49 +1,47 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function NewAdvertPage() {
-  const [formData, setFormData] = useState({ name: '', sale: 'true', tags: [], price: '', photo: null });
+const NewAdvertPage = () => {
+  const [advertData, setAdvertData] = useState({ name: '', price: '', tags: [] });
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    setFormData((prevData) => ({ ...prevData, photo: e.target.files[0] }));
-  };
-
-  const handleSubmit = async (e) => {
+  const handleCreateAdvert = async (e) => {
     e.preventDefault();
-    const formDataToSend = new FormData();
-    for (const key in formData) {
-      formDataToSend.append(key, formData[key]);
+    try {
+      const response = await axios.post(`${apiUrl}/v1/adverts`, advertData);
+      const newAdvertId = response.data.id;
+      navigate(`/adverts/${newAdvertId}`);
+    } catch (error) {
+      console.error('Error al crear el anuncio:', error);
     }
-
-    await axios.post('http://localhost:3001/api/v1/adverts', formDataToSend, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    });
-
-    navigate('/adverts');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Nombre" required />
-      <select name="sale" value={formData.sale} onChange={handleChange}>
-        <option value="true">Venta</option>
-        <option value="false">Compra</option>
-      </select>
-      <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Precio" required />
-      <input type="file" name="photo" onChange={handleFileChange} />
-      <select name="tags" value={formData.tags} onChange={handleChange} multiple>
-        {/* Aquí puedes cargar los tags disponibles desde el backend */}
-      </select>
+    <form onSubmit={handleCreateAdvert}>
+      <div>
+        <label>Nombre:</label>
+        <input
+          type="text"
+          value={advertData.name}
+          onChange={(e) => setAdvertData({ ...advertData, name: e.target.value })}
+          required
+        />
+      </div>
+      <div>
+        <label>Precio:</label>
+        <input
+          type="number"
+          value={advertData.price}
+          onChange={(e) => setAdvertData({ ...advertData, price: e.target.value })}
+          required
+        />
+      </div>
+      {/* Agrega más campos según sea necesario */}
       <button type="submit">Crear Anuncio</button>
     </form>
   );
-}
+};
 
 export default NewAdvertPage;

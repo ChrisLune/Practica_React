@@ -1,22 +1,14 @@
-import logo from './logo.svg';
-import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
 import AdvertsPage from './pages/AdvertsPage';
 import AdvertPage from './pages/AdvertPage';
 import NewAdvertPage from './pages/NewAdvertPage';
-import LoginPage from './pages/LoginPage';
 import NotFoundPage from './pages/NotFoundPage';
-import Navbar from './components/Navbar';
-
-
-
-
 
 function App() {
   return (
     <Router>
-      <Navbar />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/adverts" element={<AdvertsPage />} />

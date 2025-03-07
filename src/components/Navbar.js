@@ -20,4 +20,26 @@ function Navbar() {
   );
 }
 
+const [tags, setTags] = useState([]);
+
+useEffect(() => {
+  const fetchTags = async () => {
+    const response = await axios.get(`${apiUrl}/v1/adverts/tags`);
+    setTags(response.data);
+  };
+
+  fetchTags();
+}, []);
+
+// En el JSX
+<select>
+  {tags.map(tag => (
+    <option key={tag} value={tag}>
+      {tag}
+    </option>
+  ))}
+</select>
+
+
+
 export default Navbar;
